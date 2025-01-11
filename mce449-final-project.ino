@@ -1,5 +1,5 @@
-const int stepsPerRevolution = 3200;  // Full-step stepper motor
-const int discSlots = 5;              // Fixed number of slots
+const int stepsPerRevolution = 200;  // Full-step stepper motor
+const int discSlots = 5;             // Fixed number of slots
 
 int stepsToMove[discSlots];  // Global array for steps to move for each slot
 
@@ -14,6 +14,10 @@ void setup() {
   pinMode(step1Pin, OUTPUT);
   pinMode(step2Pin, OUTPUT);
 
+  // Declare the directions
+  digitalWrite(dir1Pin, HIGH);
+  digitalWrite(dir2Pin, LOW);
+
   // Initialize Serial communication
   Serial.begin(9600);
 
@@ -22,16 +26,10 @@ void setup() {
 }
 
 void loop() {
-  // Print stepsToMove every 1 second
-  Serial.print("[");
   for (int i = 0; i < discSlots; i++) {
-    Serial.print(stepsToMove[i]);
-    if (i < discSlots - 1) {
-      Serial.print(", ");  // Add a comma and space between elements
-    }
+    moveMotorBySteps(0, stepsToMove[i]);
+    moveMotorBySteps(1, stepsToMove[i]);
   }
-  Serial.println("]");  // End the line after printing the array
-  delay(1000);          // Wait for 1 second
 }
 
 void calculateStepsToMove() {
@@ -45,5 +43,16 @@ void calculateStepsToMove() {
   // Distribute the remainder evenly across slots
   for (int i = 0; i < remainder; i++) {
     stepsToMove[(i * discSlots / remainder) % discSlots]++;
+  }
+}
+
+void moveMotorBySteps(int motor, int steps) {
+  int stepPin = motor == 0 ? step1Pin : step2Pin;
+
+  for (int i = 0; i < steps; i++) {
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(500);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(500);
   }
 }
