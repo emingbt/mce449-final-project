@@ -37,6 +37,41 @@ void loop() {
   }
 }
 
+void calibrate() {
+  bool nonAlignedDisc = digitalRead(encoder1Pin) == 1 ? 1 : 2;
+  int stepPin = nonAlignedDisc == 1 ? step1Pin : step2Pin;
+
+  // Align the non aligned disc
+  while (digitalRead(nonAlignedDisc == 1 ? encoder1Pin : encoder2Pin) == HIGH) {
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(2000);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(2000);
+  }
+
+  int totalSlotSteps = 0;
+
+  while (digitalRead(nonAlignedDisc == 1 ? encoder1Pin : encoder2Pin) == LOW) {
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(2000);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(2000);
+
+    totalSlotSteps++;
+  }
+
+  digitalWrite(nonAlignedDisc == 1 ? dir1Pin : dir2Pin, LOW);
+
+  for (int i = 0; i < (totalSlotSteps / 2); i++) {
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(2000);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(2000);
+  }
+
+  digitalWrite(nonAlignedDisc == 1 ? dir1Pin : dir2Pin, HIGH);
+}
+
 void calculateStepsToMove() {
   int baseSteps = stepsPerRevolution / discSlots;  // Base steps for each slot
   int remainder = stepsPerRevolution % discSlots;  // Extra steps to distribute
