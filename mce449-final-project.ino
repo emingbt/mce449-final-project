@@ -8,11 +8,16 @@ const int dir2Pin = 3;
 const int step1Pin = 4;
 const int step2Pin = 5;
 
+const int encoder1Pin = 6;
+const int encoder2Pin = 7;
+
 void setup() {
   pinMode(dir1Pin, OUTPUT);
   pinMode(dir2Pin, OUTPUT);
   pinMode(step1Pin, OUTPUT);
   pinMode(step2Pin, OUTPUT);
+  pinMode(encoder1Pin, INPUT);
+  pinMode(encoder2Pin, INPUT);
 
   // Declare the directions
   digitalWrite(dir1Pin, HIGH);
