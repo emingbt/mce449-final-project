@@ -21,7 +21,7 @@ void setup() {
 
   // Declare the directions
   digitalWrite(dir1Pin, HIGH);
-  digitalWrite(dir2Pin, LOW);
+  digitalWrite(dir2Pin, HIGH);
 
   // Initialize Serial communication
   Serial.begin(9600);
