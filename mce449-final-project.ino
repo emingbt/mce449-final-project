@@ -17,6 +17,8 @@ const int ms1_2 = 3;
 const int encoder1Pin = 8;
 const int encoder2Pin = 9;
 
+const int buttonPin = 10;
+
 class Motor {
 public:
   int dirPin;
@@ -34,6 +36,9 @@ public:
 
 Motor motor1(dir1Pin, step1Pin, ms1_1, encoder1Pin);
 Motor motor2(dir2Pin, step2Pin, ms1_2, encoder2Pin);
+
+bool isRunning = false;
+
 const int encoder1Pin = 6;
 const int encoder2Pin = 7;
 
@@ -44,6 +49,7 @@ void setup() {
   pinMode(step2Pin, OUTPUT);
   pinMode(encoder1Pin, INPUT);
   pinMode(encoder2Pin, INPUT);
+  pinMode(buttonPin, INPUT_PULLUP);
 
   // Declare the directions
   digitalWrite(dir1Pin, HIGH);
@@ -61,9 +67,16 @@ void setup() {
 }
 
 void loop() {
+  if (digitalRead(buttonPin) == LOW) {
+    isRunning = !isRunning;
+    delay(1000);
+  }
+
+  if (isRunning) {
     for (int i = 0; i < discSlots; i++) {
       moveMotorBySteps(motor1.stepPin, stepsToMove[i]);
       moveMotorBySteps(motor2.stepPin, stepsToMove[i]);
+    }
   }
 }
 
