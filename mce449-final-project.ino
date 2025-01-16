@@ -1,12 +1,21 @@
-const int stepsPerRevolution = 200;  // Full-step stepper motor
-const int discSlots = 5;             // Fixed number of slots
+const int stepsPerRevolution = 400;  // Half-step stepper motor
+const int discSlots = 4;             // Fixed number of slots
 
 int stepsToMove[discSlots];  // Global array for steps to move for each slot
 
-const int dir1Pin = 2;
-const int dir2Pin = 3;
-const int step1Pin = 4;
-const int step2Pin = 5;
+// Motor 1 driver pins
+const int dir1Pin = 4;
+const int step1Pin = 5;
+const int ms1_1 = 2;
+
+// Motor 2 driver pins
+const int dir2Pin = 6;
+const int step2Pin = 7;
+const int ms1_2 = 3;
+
+// Optical encoder pins
+const int encoder1Pin = 8;
+const int encoder2Pin = 9;
 
 class Motor {
 public:
@@ -39,6 +48,10 @@ void setup() {
   // Declare the directions
   digitalWrite(dir1Pin, HIGH);
   digitalWrite(dir2Pin, HIGH);
+
+  // Make motors half step
+  digitalWrite(ms1_1, HIGH);
+  digitalWrite(ms1_2, HIGH);
 
   // Initialize Serial communication
   Serial.begin(9600);
