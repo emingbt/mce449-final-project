@@ -23,6 +23,8 @@ public:
   }
 };
 
+Motor motor1(dir1Pin, step1Pin, ms1_1, encoder1Pin);
+Motor motor2(dir2Pin, step2Pin, ms1_2, encoder2Pin);
 const int encoder1Pin = 6;
 const int encoder2Pin = 7;
 
@@ -46,9 +48,9 @@ void setup() {
 }
 
 void loop() {
-  for (int i = 0; i < discSlots; i++) {
-    moveMotorBySteps(0, stepsToMove[i]);
-    moveMotorBySteps(1, stepsToMove[i]);
+    for (int i = 0; i < discSlots; i++) {
+      moveMotorBySteps(motor1.stepPin, stepsToMove[i]);
+      moveMotorBySteps(motor2.stepPin, stepsToMove[i]);
   }
 }
 
@@ -85,6 +87,14 @@ void calibrate() {
   }
 
   digitalWrite(nonAlignedDisc == 1 ? dir1Pin : dir2Pin, HIGH);
+
+void moveMotorBySteps(int stepPin, int steps) {
+  for (int i = 0; i < steps; i++) {
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(250);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(250);
+  }
 }
 
 void calculateStepsToMove() {
