@@ -1,3 +1,6 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
 const int stepsPerRevolution = 400;  // Half-step stepper motor
 const int discSlots = 4;             // Fixed number of slots
 
@@ -39,6 +42,8 @@ Motor motor2(dir2Pin, step2Pin, ms1_2, encoder2Pin);
 
 bool isRunning = false;
 
+// Create an LCD class
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup() {
   pinMode(dir1Pin, OUTPUT);
@@ -62,6 +67,10 @@ void setup() {
 
   // Precompute steps for the fixed number of slots
   calculateStepsToMove();
+
+  // Initialize LCD
+  lcd.init();
+  lcd.backlight();
 
   calibrate();
 }
@@ -153,3 +162,8 @@ void calculateStepsToMove() {
 }
 
 void initializeLCD() {
+  lcd.setCursor(0, 0);
+  lcd.print("Hayirli");
+  lcd.setCursor(0, 1);
+  lcd.print("Cumalar");
+}
