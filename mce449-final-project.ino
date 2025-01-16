@@ -8,6 +8,21 @@ const int dir2Pin = 3;
 const int step1Pin = 4;
 const int step2Pin = 5;
 
+class Motor {
+public:
+  int dirPin;
+  int stepPin;
+  int ms1Pin;
+  int encoderPin;
+
+  Motor(int x, int y, int z, int m) {
+    dirPin = x;
+    stepPin = y;
+    ms1Pin = z;
+    encoderPin = m;
+  }
+};
+
 const int encoder1Pin = 6;
 const int encoder2Pin = 7;
 
