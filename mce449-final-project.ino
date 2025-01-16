@@ -39,8 +39,6 @@ Motor motor2(dir2Pin, step2Pin, ms1_2, encoder2Pin);
 
 bool isRunning = false;
 
-const int encoder1Pin = 6;
-const int encoder2Pin = 7;
 
 void setup() {
   pinMode(dir1Pin, OUTPUT);
@@ -64,6 +62,8 @@ void setup() {
 
   // Precompute steps for the fixed number of slots
   calculateStepsToMove();
+
+  calibrate();
 }
 
 void loop() {
@@ -81,11 +81,21 @@ void loop() {
 }
 
 void calibrate() {
-  bool nonAlignedDisc = digitalRead(encoder1Pin) == 1 ? 1 : 2;
-  int stepPin = nonAlignedDisc == 1 ? step1Pin : step2Pin;
+  if (digitalRead(motor1.encoderPin) == HIGH) {
+    calibrateDisc(motor1.dirPin, motor1.stepPin, motor1.encoderPin, false);
+    calibrateDisc(motor2.dirPin, motor2.stepPin, motor2.encoderPin, true);
+  } else if (digitalRead(motor2.encoderPin) == HIGH) {
+    calibrateDisc(motor2.dirPin, motor2.stepPin, motor2.encoderPin, false);
+    calibrateDisc(motor1.dirPin, motor1.stepPin, motor1.encoderPin, true);
+  } else {
+    calibrateDisc(motor1.dirPin, motor1.stepPin, motor1.encoderPin, true);
+    calibrateDisc(motor2.dirPin, motor2.stepPin, motor2.encoderPin, true);
+  }
+}
 
-  // Align the non aligned disc
-  while (digitalRead(nonAlignedDisc == 1 ? encoder1Pin : encoder2Pin) == HIGH) {
+void calibrateDisc(int dirPin, int stepPin, int encoderPin, bool isAligned) {
+  // Calibrate the disc according to the isAligned parameter
+  while (digitalRead(encoderPin) == isAligned ? LOW : HIGH) {
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(2000);
     digitalWrite(stepPin, LOW);
@@ -94,7 +104,11 @@ void calibrate() {
 
   int totalSlotSteps = 0;
 
-  while (digitalRead(nonAlignedDisc == 1 ? encoder1Pin : encoder2Pin) == LOW) {
+  if (isAligned) {
+    digitalWrite(dirPin, LOW);
+  }
+
+  while (digitalRead(encoderPin) == LOW) {
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(2000);
     digitalWrite(stepPin, LOW);
@@ -103,7 +117,7 @@ void calibrate() {
     totalSlotSteps++;
   }
 
-  digitalWrite(nonAlignedDisc == 1 ? dir1Pin : dir2Pin, LOW);
+  digitalWrite(dirPin, isAligned ? HIGH : LOW);
 
   for (int i = 0; i < (totalSlotSteps / 2); i++) {
     digitalWrite(stepPin, HIGH);
@@ -112,7 +126,8 @@ void calibrate() {
     delayMicroseconds(2000);
   }
 
-  digitalWrite(nonAlignedDisc == 1 ? dir1Pin : dir2Pin, HIGH);
+  digitalWrite(dirPin, HIGH);
+}
 
 void moveMotorBySteps(int stepPin, int steps) {
   for (int i = 0; i < steps; i++) {
@@ -137,13 +152,4 @@ void calculateStepsToMove() {
   }
 }
 
-void moveMotorBySteps(int motor, int steps) {
-  int stepPin = motor == 0 ? step1Pin : step2Pin;
-
-  for (int i = 0; i < steps; i++) {
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(500);
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(500);
-  }
-}
+void initializeLCD() {
