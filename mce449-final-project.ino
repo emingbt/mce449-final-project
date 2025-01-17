@@ -42,6 +42,9 @@ Motor motor2(dir2Pin, step2Pin, ms1_2, encoder2Pin);
 
 bool isRunning = false;
 
+int counter1 = 0;
+int counter2 = 0;
+
 // Create an LCD class
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -71,6 +74,7 @@ void setup() {
   // Initialize LCD
   lcd.init();
   lcd.backlight();
+  initializeLCD();
 
   calibrate();
 }
@@ -84,7 +88,13 @@ void loop() {
   if (isRunning) {
     for (int i = 0; i < discSlots; i++) {
       moveMotorBySteps(motor1.stepPin, stepsToMove[i]);
+      counter1++;
+      lcd.setCursor(8, 0);
+      lcd.print(counter1);
       moveMotorBySteps(motor2.stepPin, stepsToMove[i]);
+      counter2++;
+      lcd.setCursor(8, 1);
+      lcd.print(counter2);
     }
   }
 }
@@ -172,7 +182,11 @@ void calculateStepsToMove() {
 
 void initializeLCD() {
   lcd.setCursor(0, 0);
-  lcd.print("Hayirli");
+  lcd.print("Disc 1:");
+  lcd.setCursor(8, 0);
+  lcd.print(counter1);
   lcd.setCursor(0, 1);
-  lcd.print("Cumalar");
+  lcd.print("Disc 2:");
+  lcd.setCursor(8, 1);
+  lcd.print(counter2);
 }
