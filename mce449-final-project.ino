@@ -82,7 +82,7 @@ void setup() {
 void loop() {
   if (digitalRead(buttonPin) == LOW) {
     isRunning = !isRunning;
-    delay(1000);
+    delay(200);
   }
 
   if (isRunning) {
