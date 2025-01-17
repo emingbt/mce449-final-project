@@ -106,33 +106,42 @@ void calibrateDisc(int dirPin, int stepPin, int encoderPin, bool isAligned) {
   // Calibrate the disc according to the isAligned parameter
   while (digitalRead(encoderPin) == isAligned ? LOW : HIGH) {
     digitalWrite(stepPin, HIGH);
-    delayMicroseconds(2000);
+    delayMicroseconds(10000);
     digitalWrite(stepPin, LOW);
-    delayMicroseconds(2000);
+    delayMicroseconds(10000);
   }
 
   int totalSlotSteps = 0;
 
-  if (isAligned) {
-    digitalWrite(dirPin, LOW);
-  }
-
-  while (digitalRead(encoderPin) == LOW) {
+  while (digitalRead(encoderPin) == isAligned ? HIGH : LOW) {
     digitalWrite(stepPin, HIGH);
-    delayMicroseconds(2000);
+    delayMicroseconds(10000);
     digitalWrite(stepPin, LOW);
-    delayMicroseconds(2000);
+    delayMicroseconds(10000);
 
     totalSlotSteps++;
   }
 
-  digitalWrite(dirPin, isAligned ? HIGH : LOW);
+  if (isAligned) {
+    totalSlotSteps = 0;
+
+    while (digitalRead(encoderPin) == LOW) {
+      digitalWrite(stepPin, HIGH);
+      delayMicroseconds(10000);
+      digitalWrite(stepPin, LOW);
+      delayMicroseconds(10000);
+
+      totalSlotSteps++;
+    }
+  }
+
+  digitalWrite(dirPin, LOW);
 
   for (int i = 0; i < (totalSlotSteps / 2); i++) {
     digitalWrite(stepPin, HIGH);
-    delayMicroseconds(2000);
+    delayMicroseconds(10000);
     digitalWrite(stepPin, LOW);
-    delayMicroseconds(2000);
+    delayMicroseconds(10000);
   }
 
   digitalWrite(dirPin, HIGH);
