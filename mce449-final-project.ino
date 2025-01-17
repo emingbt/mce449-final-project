@@ -141,9 +141,9 @@ void calibrateDisc(int dirPin, int stepPin, int encoderPin, bool isAligned) {
 void moveMotorBySteps(int stepPin, int steps) {
   for (int i = 0; i < steps; i++) {
     digitalWrite(stepPin, HIGH);
-    delayMicroseconds(250);
+    delayMicroseconds(230);
     digitalWrite(stepPin, LOW);
-    delayMicroseconds(250);
+    delayMicroseconds(230);
   }
 }
 
