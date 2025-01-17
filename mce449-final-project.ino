@@ -17,8 +17,8 @@ const int step2Pin = 7;
 const int ms1_2 = 3;
 
 // Optical encoder pins
-const int encoder1Pin = 8;
-const int encoder2Pin = 9;
+const int encoder1Pin = 9;
+const int encoder2Pin = 8;
 
 const int buttonPin = 10;
 
